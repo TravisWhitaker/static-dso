@@ -22,6 +22,8 @@ People say that you can't have more than one libc in the same program image.
 
 - Signal handlers?
     - Only the client should be installing these anyway.
+    - `glibc` uses signals internally for `setuid` and thread cancellation.
+    - `musl` doesn't so we should be ok?
 - Environment variables?
     - Do we need to re-read `auxv` or something?
     - Your idea sucks if you need to do this anyway.
@@ -35,9 +37,18 @@ People say that you can't have more than one libc in the same program image.
 Incompatible TCB/TLS layout between `musl` and `glibc`. It must be solved, not
 even linker namespaces would save you from this.
 
-## The Big Fix
+## The Fix?
 
 Maintain a set of lib `pthread` references in `musl` so we can tell which are
 ours and which are the client's. Check this before each TLS access. If it's not
 a TCB that we setup, fall back to a static global or tell the caller the
 operation failed.
+
+Good:
+- Will never observe or interact with a TCB incorrectly.
+
+Bad:
+- TLS access is slower.
+- Some operations become impossible.
+    - Using TLS is a skill issue.
+    - Graphics/GUI APIs will be called on the client side anyway.
