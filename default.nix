@@ -36,7 +36,7 @@ let pkgsrc = builtins.fetchGit
         name = "libacme";
         src = p.lib.cleanSource ./acme;
         buildPhase = ''
-          $CC -g -ggdb -fPIC -shared -o libacme.so -I ./include ./src/acme.c -static -nostartfiles -Wl,--version-script=./src/acme.map
+          $CC -g -ggdb -fPIC -shared -o libacme.so -I ./include ./src/acme.c -static -nostartfiles -Wl,-static -Wl,--version-script=./src/acme.map
         '';
         installPhase = ''
             mkdir -p $out/include
