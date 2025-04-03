@@ -1,0 +1,4 @@
+{
+    global: acme_init; acme_math; acme_get_errno; acme_set_errno; acme_start_worker; acme_join_worker;
+    local: *;
+};
